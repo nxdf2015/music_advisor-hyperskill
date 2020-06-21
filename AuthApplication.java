@@ -1,56 +1,54 @@
 package advisor;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import netscape.javascript.JSObject;
+
 import java.io.IOException;
 
-public class AuthApplication  implements API{
+public class AuthApplication extends AbstractApplication{
     private Application application;
     private boolean authorize;
-    private String endPointUri;
+
 
     public AuthApplication(Application application) {
         this.application = application;
         this.authorize = false;
-        this.endPointUri = application.getEndPoint();
-
+        this.authorizationServerPath = application.getAuthorizationServerPath();
+        this.resourceServerPath=application.getResourceServerPath();
     }
 
     @Override
-    public void newRelease() {
+    public void newRelease() throws ErrorsAPI {
         if (isAuthorize()){
-            application.newRelease();
+             application.newRelease();
+
         }
     }
 
     @Override
-    public void featured() {
+    public void featured() throws ErrorsAPI {
         if (isAuthorize()){
             application.featured();
         }
     }
 
     @Override
-    public void categories() {
+    public void categories() throws ErrorsAPI {
         if(isAuthorize()){
             application.categories();
         }
     }
 
     @Override
-    public void playlists(String playlist) {
+    public void playlists(String playlist) throws ErrorsAPI {
         if (isAuthorize()){
+
             application.playlists(playlist);
         }
     }
 
-    @Override
-    public void setEndPoint(String uri) {
 
-    }
-
-    @Override
-    public String getEndPoint() {
-        return endPointUri;
-    }
 
     public void auth(){
 //        String client_id = "308e9cffef344f59b1776c8a6c2b358c";
@@ -61,8 +59,8 @@ public class AuthApplication  implements API{
 //        System.out.println();
 
         try {
-            System.out.println("auth :"+endPointUri);
-            Server server = new Server(endPointUri);
+            System.out.println("auth :"+ authorizationServerPath);
+            Server server = new Server(authorizationServerPath);
             server.startServer();
             System.out.println(server.getUri());
             System.out.println("waiting for code...");
@@ -73,9 +71,13 @@ public class AuthApplication  implements API{
 
 
             server.stop();
-            System.out.println("code receive" + server.getCode());
+            System.out.println("code receive");
             System.out.println("making http request for access_token...");
-            String token = server.Token();
+            token = server.Token();
+
+            JsonObject data = JsonParser.parseString(token).getAsJsonObject();
+
+            application.setToken(data.get("access_token").getAsString());
             if (token != null) {
                 authorize = true;
                 System.out.println(token);

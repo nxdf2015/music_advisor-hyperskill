@@ -21,6 +21,8 @@ public class Server {
     private final  String client_id = "308e9cffef344f59b1776c8a6c2b358c";
     private final String client_secret = "ea3236b70ed24e19b38bbaf1ce24606f";
     private String redirect_uri = "http://localhost:8080";
+    private String token;
+
     public String getCode() {
         return code;
     }
@@ -38,6 +40,7 @@ public class Server {
     public Server(String endpoint)   {
         uriEndPoint = endpoint;
     }
+
     public void startServer() throws IOException {
         this.httpServer =   HttpServer.create();
         httpServer.bind(new InetSocketAddress(8080),0);
@@ -69,20 +72,11 @@ public class Server {
                  catch (Exception e){
 
                  }
-
-
-
-
-
-
-
             }
         });
 
         httpServer.start();
     }
-
-
 
 
     public String Token(){
@@ -101,6 +95,7 @@ public class Server {
 
         try {
            HttpResponse<String> response =  httpClient.send(httpRequest,HttpResponse.BodyHandlers.ofString());
+           token = response.body();
             return response.body();
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,4 +111,6 @@ public class Server {
         httpServer.stop(0);
         System.out.println("stop server");
     }
+
+
 }

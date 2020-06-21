@@ -16,11 +16,14 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         boolean exit=false;
         Parser parser =new Parser();
-        String uriEndPoint = parser.getOption(args);
+        parser.getOption(args);
+        String authorizationPath = parser.getAuthorizationPath();
+        String resourcePath = parser.getResourcePath();
 
         Application application = new Application();
+        application.setAuthorizationServerPath(authorizationPath);
+        application.setResourceServerPath(resourcePath);
 
-        application.setEndPoint(uriEndPoint);
         AuthApplication  authApplication= new AuthApplication(application);
 
         while (!exit) {
@@ -43,7 +46,8 @@ public class Main {
 
                        break;
                    case PLAYLISTS:
-                       String playlist = scanner.next();
+                       String playlist = scanner.nextLine().trim();
+                      // System.out.println(playlist);
                        authApplication.playlists(playlist);
                        break;
                    default:
@@ -53,8 +57,11 @@ public class Main {
                }
                }
            }
-           catch (EnumConstantNotPresentException e){
+           catch (EnumConstantNotPresentException | IllegalArgumentException e){
                System.out.println("selection invalid");
+           }
+           catch (ErrorsAPI e){
+               System.out.println(e.getMessage());
            }
 
         }
