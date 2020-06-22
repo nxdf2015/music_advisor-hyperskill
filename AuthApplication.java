@@ -2,9 +2,9 @@ package advisor;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import netscape.javascript.JSObject;
 
 import java.io.IOException;
+import java.util.List;
 
 public class AuthApplication extends AbstractApplication{
     private Application application;
@@ -19,33 +19,37 @@ public class AuthApplication extends AbstractApplication{
     }
 
     @Override
-    public void newRelease() throws ErrorsAPI {
-        if (isAuthorize()){
-             application.newRelease();
+    public List<PlayList> newRelease() throws ErrorsAPI {
 
+        if (isAuthorize()){
+            return   application.newRelease();
         }
+        return null;
     }
 
     @Override
-    public void featured() throws ErrorsAPI {
+    public List<Album> featured() throws ErrorsAPI {
         if (isAuthorize()){
-            application.featured();
+            return application.featured();
         }
+        return null;
     }
 
     @Override
-    public void categories() throws ErrorsAPI {
+    public List<Category> categories() throws ErrorsAPI {
         if(isAuthorize()){
-            application.categories();
+            return application.categories();
         }
+        return null;
     }
 
     @Override
-    public void playlists(String playlist) throws ErrorsAPI {
+    public List<Album> playlists(String playlist) throws ErrorsAPI {
         if (isAuthorize()){
 
-            application.playlists(playlist);
+           return  application.playlists(playlist);
         }
+        return null;
     }
 
 

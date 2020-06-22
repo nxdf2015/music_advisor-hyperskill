@@ -1,9 +1,11 @@
 package advisor;
 
+import java.util.List;
+
 public interface API {
-    public void newRelease() throws ErrorsAPI;
-    public void featured() throws ErrorsAPI;
-    public void categories() throws ErrorsAPI;
-    public void playlists(String playlist) throws ErrorsAPI;
+    public List<PlayList> newRelease() throws ErrorsAPI;
+    public List<Album> featured() throws ErrorsAPI;
+    public List<Category> categories() throws ErrorsAPI;
+    public List<Album> playlists(String playlist) throws ErrorsAPI;
 
 }

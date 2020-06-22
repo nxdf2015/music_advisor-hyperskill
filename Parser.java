@@ -8,6 +8,7 @@ public class Parser {
     private String defaultAuthorizationPath="https://accounts.spotify.com";
     private String  defaultResourcepath = "https://api.spotify.com";
 
+
     public Parser() {
         data = new HashMap<>();
     }
@@ -32,4 +33,21 @@ public class Parser {
         String value = data.get("resource");
         return value == null ? defaultResourcepath : value;
     }
+
+    public int getItemByPage(){
+        String value = data.get("page");
+        int number = 5;
+        try{
+             number = Integer.parseInt(value);
+            return number;
+        }
+        catch (NumberFormatException e){
+
+        }
+        finally {
+            return number;
+        }
+
+    }
+
 }

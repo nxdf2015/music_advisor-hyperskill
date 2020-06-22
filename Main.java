@@ -1,64 +1,60 @@
 package advisor;
 
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Scanner;
 
 import static advisor.ACTION.AUTH;
+import static advisor.ACTION.PLAYLISTS;
 
 public class Main {
     public static void main(String[] args) {
 
 
-
-
         boolean authorize = false;
-        Scanner scanner = new Scanner(System.in);
+       // Scanner scanner = new Scanner(System.in);
         boolean exit=false;
         Parser parser =new Parser();
         parser.getOption(args);
         String authorizationPath = parser.getAuthorizationPath();
         String resourcePath = parser.getResourcePath();
+        int itemByPage = parser.getItemByPage();
+       // System.out.println(itemByPage+"---------------"+authorizationPath+"-----------"+resourcePath);
+        View view  = new View();
 
-        Application application = new Application();
-        application.setAuthorizationServerPath(authorizationPath);
-        application.setResourceServerPath(resourcePath);
+        Controller controller = new Controller(authorizationPath,resourcePath,itemByPage);
+        controller.setView(view);
 
-        AuthApplication  authApplication= new AuthApplication(application);
+//
+//        Application application = new Application();
+//        application.setAuthorizationServerPath(authorizationPath);
+//        application.setResourceServerPath(resourcePath);
+//
+//        AuthApplication  authApplication= new AuthApplication(application);
 
-        while (!exit) {
+        while (controller.isActive()) {
+
 
            try {
-               ACTION select = ACTION.valueOf(scanner.next().strip().toUpperCase());
-               if (select == AUTH){
-                   authApplication.auth();
+               ACTION  select =view.getAction();
+             //  ACTION select = ACTION.valueOf(scanner.next().strip().toUpperCase());
+
+               if (select == PLAYLISTS){
+                   String playlist = view.getLine();
+                   controller.executeAction(select,playlist);
                }
                else {
-               switch (select) {
-                   case NEW:
-                       authApplication.newRelease();
-                       break;
-                   case FEATURED:
-                       authApplication.featured();
-                       break;
-                   case CATEGORIES:
-                       authApplication.categories();
+                   controller.executeAction(select);
+               }
 
-                       break;
-                   case PLAYLISTS:
-                       String playlist = scanner.nextLine().trim();
-                      // System.out.println(playlist);
-                       authApplication.playlists(playlist);
-                       break;
-                   default:
-                       System.out.println("---GOODBYE!---");
-                       exit = true;
-                       break;
-               }
-               }
+
            }
            catch (EnumConstantNotPresentException | IllegalArgumentException e){
                System.out.println("selection invalid");
+              e.printStackTrace();
            }
            catch (ErrorsAPI e){
                System.out.println(e.getMessage());
